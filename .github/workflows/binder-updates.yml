@@ -57,3 +57,31 @@ jobs:
         run: python scripts/sync_github_updates.py --channel stable
       - name: Publish verified Beta packages
         run: python scripts/sync_github_updates.py --channel beta
+      - name: Verify anonymous downloads directly from GitHub
+        run: |
+          python - <<'PY'
+          import hashlib, json, urllib.request
+          for channel in ['stable', 'beta']:
+              raw = f'https://raw.githubusercontent.com/KeLa13/kela13/master/{channel}/update.json'
+              request = urllib.request.Request(raw, headers={'User-Agent': 'XyetaBinder-Updater', 'Cache-Control': 'no-cache'})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  manifest = json.load(response)
+              assert manifest['channel'] == channel
+              tag = ('beta-v' if channel == 'beta' else 'v') + manifest['version']
+              prefix = f'https://github.com/KeLa13/kela13/releases/download/{tag}/'
+              packages = [(manifest['download_url'], manifest['asset'], manifest['size'], manifest['sha256'])]
+              if manifest.get('delta_asset'):
+                  packages.append((manifest['delta_download_url'], manifest['delta_asset'], manifest['delta_size'], manifest['delta_sha256']))
+              for url, asset, size, expected_hash in packages:
+                  assert url == prefix + asset
+                  request = urllib.request.Request(url, headers={'User-Agent': 'XyetaBinder-Updater'})
+                  digest, total = hashlib.sha256(), 0
+                  with urllib.request.urlopen(request, timeout=120) as response:
+                      assert response.status == 200
+                      while chunk := response.read(1024 * 1024):
+                          total += len(chunk)
+                          assert total <= size
+                          digest.update(chunk)
+                  assert total == size and digest.hexdigest() == expected_hash
+                  print(channel, manifest['version'], asset, total, 'anonymous GitHub SHA-256 OK')
+          PY
