@@ -141,7 +141,8 @@ def assert_assets_match(release, rows):
 
 def sync(channel, api):
     source = f"{SOURCE_ORIGIN}/github-updates/{channel}"
-    with urllib.request.urlopen(source, timeout=30) as response:
+    request = urllib.request.Request(source, headers={"User-Agent": "Xyeta-Mirror-Sync"})
+    with urllib.request.urlopen(request, timeout=30) as response:
         manifest, rows = validate_export(read_json(response), channel)
     published = public_manifest(manifest)
     text = json.dumps(published, ensure_ascii=False, indent=2) + "\n"
@@ -213,4 +214,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
