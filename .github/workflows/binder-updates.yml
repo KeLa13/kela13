@@ -44,7 +44,7 @@ jobs:
                   print('Tested distribution service is ready')
                   break
               except urllib.error.HTTPError as error:
-                  if error.code not in {404, 429, 502, 503, 504}:
+                  if error.code not in {401, 403, 404, 429, 502, 503, 504}:
                       raise
               except urllib.error.URLError:
                   pass
