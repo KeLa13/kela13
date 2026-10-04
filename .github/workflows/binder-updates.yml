@@ -1,0 +1,58 @@
+name: Publish Binder updates on GitHub
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/binder-updates.yml
+      - scripts/sync_github_updates.py
+      - .release-request.json
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: xyeta-public-updates
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Wait for the tested distribution service
+        run: |
+          python - <<'PY'
+          import json, time, urllib.error, urllib.request
+          deadline = time.monotonic() + 1200
+          url = 'https://xyeta-private-updater.20kella01.workers.dev/github-updates/stable'
+          while True:
+              try:
+                  with urllib.request.urlopen(url, timeout=30) as response:
+                      payload = json.load(response)
+                  if payload.get('manifest', {}).get('channel') != 'stable':
+                      raise RuntimeError('Invalid distribution service response')
+                  print('Tested distribution service is ready')
+                  break
+              except urllib.error.HTTPError as error:
+                  if error.code not in {404, 429, 502, 503, 504}:
+                      raise
+              except urllib.error.URLError:
+                  pass
+              if time.monotonic() >= deadline:
+                  raise RuntimeError('Distribution service did not become ready')
+              time.sleep(30)
+          PY
+      - name: Publish verified Stable packages
+        run: python scripts/sync_github_updates.py --channel stable
+      - name: Publish verified Beta packages
+        run: python scripts/sync_github_updates.py --channel beta
