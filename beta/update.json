@@ -1,0 +1,17 @@
+{
+  "version": "0.30.139",
+  "asset": "XyetaBinder-Beta-Setup.exe",
+  "sha256": "dca3afd973b999566d0a254a82f645bc7af20e5f51f5da79945da7f2c79745e3",
+  "size": 112185715,
+  "notes": "# Xyeta Binder Beta 0.30.139\r\n\r\n- Обновления Beta и Stable проверяются и скачиваются напрямую через публичный GitHub, без обращения биндера к Cloudflare.\r\n- Сохранены проверка SHA-256, восстановление загрузки и выбор подходящего delta-пакета для установленной Beta.\r\n- Ключ сервиса авторизации не отправляется на GitHub/CDN; авторизация и пользовательские настройки сохранены.\r\n- В Beta перенесены последние исправления палитры и оверлея участников из Stable.\r\n\r\nСборки: https://github.com/KeLa13/kela13/releases\r\n\r\n\r\nКоммит сборки: 47197ebb1b51119639679d3d3fefa56f1e06ff43.\r\n\r\n",
+  "mandatory": false,
+  "package_type": "installer",
+  "components_asset": "components.json",
+  "delta_from": "0.30.136",
+  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.136.zip",
+  "delta_sha256": "e2ee2c80311e05658fb4168e2d1b6b9e61b8d67997a0a4332a55b3fc2a5dc6ea",
+  "delta_size": 7091648,
+  "channel": "beta",
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.139/XyetaBinder-Beta-Setup.exe",
+  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.139/XyetaBinder-Beta-Delta-from-0.30.136.zip"
+}
