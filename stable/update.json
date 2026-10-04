@@ -1,0 +1,12 @@
+{
+  "version": "0.30.138",
+  "asset": "XyetaBinder.exe",
+  "sha256": "305426fc3dd69ccec30925b3f893427f78545513c2908039f2d8e6c7502bdafd",
+  "size": 112178472,
+  "notes": "# Xyeta Binder 0.30.138\r\n\r\n- Проверка версии и скачивание обновлений идут напрямую через публичный GitHub, без обращения биндера к Cloudflare.\r\n- Stable и Beta используют отдельные манифесты; для установленной Beta сохранены проверенные компонентные обновления.\r\n- Ключ сервиса авторизации не отправляется на GitHub или CDN; проверка размера и SHA-256 сохранена.\r\n- Авторизация, настройки, служба ввода и функции биндера сохранены.\r\n\r\nСборки: https://github.com/KeLa13/kela13/releases\r\n\r\n[Скачать XyetaBinder.exe — без входа в GitHub](https://xyeta-private-updater.20kella01.workers.dev/download)\r\n\r\nВерсия: 0.30.138. Коммит сборки: a460c4dcfa4c854674bff28902d46fc5359366b6.\r\n",
+  "mandatory": false,
+  "package_type": "installer",
+  "components_asset": "components.json",
+  "channel": "stable",
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/v0.30.138/XyetaBinder.exe"
+}
