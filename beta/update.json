@@ -1,17 +1,17 @@
 {
-  "version": "0.30.139",
+  "version": "0.30.141",
   "asset": "XyetaBinder-Beta-Setup.exe",
-  "sha256": "dca3afd973b999566d0a254a82f645bc7af20e5f51f5da79945da7f2c79745e3",
-  "size": 112185715,
-  "notes": "# Xyeta Binder Beta 0.30.139\r\n\r\n- Обновления Beta и Stable проверяются и скачиваются напрямую через публичный GitHub, без обращения биндера к Cloudflare.\r\n- Сохранены проверка SHA-256, восстановление загрузки и выбор подходящего delta-пакета для установленной Beta.\r\n- Ключ сервиса авторизации не отправляется на GitHub/CDN; авторизация и пользовательские настройки сохранены.\r\n- В Beta перенесены последние исправления палитры и оверлея участников из Stable.\r\n\r\nСборки: https://github.com/KeLa13/kela13/releases\r\n\r\n\r\nКоммит сборки: 47197ebb1b51119639679d3d3fefa56f1e06ff43.\r\n\r\n",
+  "sha256": "0c98c54b53ef78fd816b4fda1088c604c361a5a5abc0d968289f7f14bf1e7655",
+  "size": 112173406,
+  "notes": "# Xyeta Binder Beta 0.30.141\r\n\r\n- Тайминги обычного ввода приведены к предоставленному xyeta.ahk: открытие чата — 150 мс, приветствие — 150 мс после клика.\r\n- Удалено скрытое сокращение открытия чата до 60 мс при сборке.\r\n- В конструкторе и перед вводом Dynamic ID применяется пауза открытия чата 150 мс; явные пользовательские паузы сохранены.\r\n- Команды входа и серии команд сохраняют 300/300 мс; /specoff → F5 — 150/300 мс. Посимвольные задержки обычных фраз не добавляются, как в SendInput исходного AHK.\r\n- «Выдача», МП, уровень прав запуска и остальные функции сохранены.\r\n\r\nПричина накапливающихся задержек игрового интерфейса пока не установлена: изменение исправляет подтверждённые расхождения таймингов.\r\n\r\n\r\nКоммит сборки: 30efa2b04ef3b014afc5bc976f1a13c276ea4e67.\r\n\r\n",
   "mandatory": false,
   "package_type": "installer",
   "components_asset": "components.json",
-  "delta_from": "0.30.136",
-  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.136.zip",
-  "delta_sha256": "e2ee2c80311e05658fb4168e2d1b6b9e61b8d67997a0a4332a55b3fc2a5dc6ea",
-  "delta_size": 7091648,
+  "delta_from": "0.30.139",
+  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.139.zip",
+  "delta_sha256": "f5d28ecf2ef2389cc8295a6c01fc8fee653f5bead725efa918579e4c7c1aef68",
+  "delta_size": 7085953,
   "channel": "beta",
-  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.139/XyetaBinder-Beta-Setup.exe",
-  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.139/XyetaBinder-Beta-Delta-from-0.30.136.zip"
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.141/XyetaBinder-Beta-Setup.exe",
+  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.141/XyetaBinder-Beta-Delta-from-0.30.139.zip"
 }
