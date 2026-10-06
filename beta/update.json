@@ -1,17 +1,17 @@
 {
-  "version": "0.30.145",
+  "version": "0.30.147",
   "asset": "XyetaBinder-Beta-Setup.exe",
-  "sha256": "07df028a07b8f75b30a732c794fefd0c203840d467985b8fcc413450b0d77e51",
-  "size": 111654530,
-  "notes": "# Xyeta Binder Beta 0.30.145\r\n\r\n- Кликер использует один спящий поток без запроса таймера 1 мс и отправляет один клик ЛКМ (нажатие и отпускание) за цикл.\r\n- Интервал по умолчанию — 50 мс, до 20 кликов в секунду; доступный диапазон — 50–1000 мс. Старые значения 1–49 мс автоматически повышаются до 50 мс.\r\n- При занятом вводе клик пропускается. Пропущенные клики не накапливаются, задержка отправки не приводит к серии догоняющих нажатий.\r\n- Выключение будит поток сразу, повторные включения не создают дополнительные потоки и не обходят ограничение частоты.\r\n- Убрано обязательное открытие от имени администратора: EXE использует asInvoker, установка остаётся для текущего пользователя.\r\n\r\nТайминги обычных команд, «Выдачи» и МП, логотип, настройки и авторизация сохранены. Причину зависаний в конкретной игровой сессии нужно подтвердить повторной проверкой в игре.\r\n\r\n\r\nКоммит сборки: f248e8d8f807643207a08b62fca16a8b8b963395.\r\n\r\n",
+  "sha256": "2cbcd102b836905a4303003aa1caac38bb120657c2a45e258fb7d52f0b461a92",
+  "size": 111649087,
+  "notes": "# Xyeta Binder Beta 0.30.147\r\n\r\n- Возвращён ручной ввод интервала кликера от 1 до 1000 мс. Значения меньше 50 мс сохраняются и применяются без автоматического повышения.\r\n- Рекомендуемые интервалы 50, 75, 100 и 200 мс оставлены кнопками под полем. Значение по умолчанию — 50 мс.\r\n- Сохранены оптимизация кликера, ожидание без таймера 1 мс, отсутствие накопления пропущенных кликов и обычный запуск без обязательных прав администратора.\r\n\r\n\r\nКоммит сборки: bbb82777df6466d4fbd0e7c56ffb407ae3e05b1b.\r\n\r\n",
   "mandatory": false,
   "package_type": "installer",
   "components_asset": "components.json",
-  "delta_from": "0.30.143",
-  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.143.zip",
-  "delta_sha256": "b2e1aece6ee8c49c034e30211bda9b3818ec7fea785ac5d1a2894598ddbd0b2c",
-  "delta_size": 7041092,
+  "delta_from": "0.30.145",
+  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.145.zip",
+  "delta_sha256": "7e0b6a5bb3542bc416c8848389ef4e36f1a4cd4c2bfc072e313257c5f26441da",
+  "delta_size": 7041082,
   "channel": "beta",
-  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.145/XyetaBinder-Beta-Setup.exe",
-  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.145/XyetaBinder-Beta-Delta-from-0.30.143.zip"
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.147/XyetaBinder-Beta-Setup.exe",
+  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.147/XyetaBinder-Beta-Delta-from-0.30.145.zip"
 }
