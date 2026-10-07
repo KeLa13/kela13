@@ -1,17 +1,17 @@
 {
-  "version": "0.30.147",
+  "version": "0.30.155",
   "asset": "XyetaBinder-Beta-Setup.exe",
-  "sha256": "2cbcd102b836905a4303003aa1caac38bb120657c2a45e258fb7d52f0b461a92",
-  "size": 111649087,
-  "notes": "# Xyeta Binder Beta 0.30.147\r\n\r\n- Возвращён ручной ввод интервала кликера от 1 до 1000 мс. Значения меньше 50 мс сохраняются и применяются без автоматического повышения.\r\n- Рекомендуемые интервалы 50, 75, 100 и 200 мс оставлены кнопками под полем. Значение по умолчанию — 50 мс.\r\n- Сохранены оптимизация кликера, ожидание без таймера 1 мс, отсутствие накопления пропущенных кликов и обычный запуск без обязательных прав администратора.\r\n\r\n\r\nКоммит сборки: bbb82777df6466d4fbd0e7c56ffb407ae3e05b1b.\r\n\r\n",
+  "sha256": "a643071cf48f9fed3a8f7a9f0fbc1bfaac5dea0aae5f2c4a616b1e02b8dc3d27",
+  "size": 111668648,
+  "notes": "# Xyeta Binder Beta 0.30.155\r\n\r\n- Исправлено обновление из уже установленной Xyeta: старые версии больше не закрывают биндер, оставляя установщик без продолжения.\r\n- Старый протокол `--xyeta-apply-update` автоматически переводится в тихую установку Inno Setup.\r\n- После успешной установки Xyeta запускается снова автоматически.\r\n- Совместимость сохранена для переходов со старых Stable/Beta-сборок, включая 0.30.149/0.30.150/0.30.151.\r\n- Кликер и режим «Турбо · 1 мс» сохранены без отката функционала.\r\n\r\n\r\nКоммит сборки: c09a06c17375ef4b7c82f6ebfc41ebb2445b76ed.\r\n\r\n",
   "mandatory": false,
   "package_type": "installer",
   "components_asset": "components.json",
-  "delta_from": "0.30.145",
-  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.145.zip",
-  "delta_sha256": "7e0b6a5bb3542bc416c8848389ef4e36f1a4cd4c2bfc072e313257c5f26441da",
-  "delta_size": 7041082,
+  "delta_from": "0.30.153",
+  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.153.zip",
+  "delta_sha256": "a0f849d5f5a43a3290a45ec01c10b10ab43c4921546c9bd3763dd52feca9c3e6",
+  "delta_size": 7018961,
   "channel": "beta",
-  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.147/XyetaBinder-Beta-Setup.exe",
-  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.147/XyetaBinder-Beta-Delta-from-0.30.145.zip"
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.155/XyetaBinder-Beta-Setup.exe",
+  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.155/XyetaBinder-Beta-Delta-from-0.30.153.zip"
 }
