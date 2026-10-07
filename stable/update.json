@@ -1,12 +1,12 @@
 {
-  "version": "0.30.154",
+  "version": "0.30.146",
   "asset": "XyetaBinder.exe",
-  "sha256": "e9ab43ca8ffffc6e0bb86c46c4aad6f05bf277d64030182cbaa3d2842a5d55bf",
-  "size": 111671116,
-  "notes": "# Xyeta Binder 0.30.154\r\n\r\n- Исправлено обновление из уже установленной Xyeta: старые версии больше не закрывают биндер, оставляя установщик без продолжения.\r\n- Если предыдущая версия запускает новый Setup через старый протокол, установщик автоматически перезапускает себя в тихом режиме и завершает установку без ручного мастера.\r\n- После успешной замены файлов Xyeta автоматически запускается снова.\r\n- Сохраняется совместимость со старым флагом `--xyeta-apply-update`, поэтому исправление работает при переходе с 0.30.149/0.30.150/0.30.151.\r\n- Изменения кликера и режим «Турбо · 1 мс» из 0.30.152 сохранены.\r\n\r\n[Скачать XyetaBinder.exe — без входа в GitHub](https://xyeta-private-updater.20kella01.workers.dev/download)\r\n\r\nВерсия: 0.30.154. Коммит сборки: e4fe7cd3d61706b72aaaf9b0ab9a2b89fa679d34.\r\n",
+  "sha256": "dfe262ad78a315d995f83f1a80a227e603c929cfcd8e97feba03f229371b82ad",
+  "size": 111654493,
+  "notes": "# Xyeta Binder 0.30.146\r\n\r\n- Возвращён ручной ввод интервала кликера от 1 до 1000 мс. Значения меньше 50 мс сохраняются и применяются без автоматического повышения.\r\n- Рекомендуемые интервалы 50, 75, 100 и 200 мс оставлены кнопками под полем. Значение по умолчанию — 50 мс.\r\n- Сохранены оптимизация кликера, ожидание без таймера 1 мс, отсутствие накопления пропущенных кликов и обычный запуск без обязательных прав администратора.\r\n\r\n[Скачать XyetaBinder.exe — без входа в GitHub](https://xyeta-private-updater.20kella01.workers.dev/download)\r\n\r\nВерсия: 0.30.146. Коммит сборки: d0313cbc3ea2442c905cffb30ac2915cbc496db5.\r\n",
   "mandatory": false,
   "package_type": "installer",
   "components_asset": "components.json",
   "channel": "stable",
-  "download_url": "https://github.com/KeLa13/kela13/releases/download/v0.30.154/XyetaBinder.exe"
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/v0.30.146/XyetaBinder.exe"
 }
