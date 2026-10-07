@@ -1,7 +1,15 @@
 name: Publish Binder updates on GitHub
 
 on:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/binder-updates.yml
+      - scripts/sync_github_updates.py
+      - .release-request.json
   workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
 
 permissions:
   contents: write
