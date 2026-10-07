@@ -1,17 +1,17 @@
 {
-  "version": "0.30.155",
+  "version": "0.30.159",
   "asset": "XyetaBinder-Beta-Setup.exe",
-  "sha256": "a643071cf48f9fed3a8f7a9f0fbc1bfaac5dea0aae5f2c4a616b1e02b8dc3d27",
-  "size": 111668648,
-  "notes": "# Xyeta Binder Beta 0.30.155\r\n\r\n- Исправлено обновление из уже установленной Xyeta: старые версии больше не закрывают биндер, оставляя установщик без продолжения.\r\n- Старый протокол `--xyeta-apply-update` автоматически переводится в тихую установку Inno Setup.\r\n- После успешной установки Xyeta запускается снова автоматически.\r\n- Совместимость сохранена для переходов со старых Stable/Beta-сборок, включая 0.30.149/0.30.150/0.30.151.\r\n- Кликер и режим «Турбо · 1 мс» сохранены без отката функционала.\r\n\r\n\r\nКоммит сборки: c09a06c17375ef4b7c82f6ebfc41ebb2445b76ed.\r\n\r\n",
+  "sha256": "b4a96d73b18527360c6f35910a0c1ef6c7a5f43886e6e2dca9b401ae49a34a80",
+  "size": 111665934,
+  "notes": "# Xyeta Binder Beta 0.30.159\r\n\r\n- Исправлена передача установки из старых версий в тихий Setup и гонка при подтверждении запуска установщика.\r\n- Служебные файлы от прошлой попытки больше не активируют автоустановку. Выполненное задание удаляется после успешной установки.\r\n- Добавлена повторная проверка версии перед установкой: текущая и более старая версия не устанавливаются из оставшегося кэша без явного отката.\r\n- Перед полной Windows-сборкой проверяются настоящий установщик со старым и новым способом запуска, пути с пробелами и оставшиеся служебные файлы.\r\n- Рамка подсказок сохраняет ширину, высоту и положение после редактора и между запусками. Угол меняет рамку, колёсико — текст; «Сбросить вид» возвращает автоматический размер.\r\n- Участников МП можно плавно перемещать зажатой ЛКМ за значок слева, с автопрокруткой длинного списка. Имя, статик и включённое состояние перемещаются вместе.\r\n- Новый порядок участников сохраняется кнопкой «Сохранить» и используется при выполнении команд МП.\r\n- Быстрый турборежим кликера с паузой 1 мс сохранён. Обычный запуск не требует прав администратора.\r\n\r\n\r\nКоммит сборки: 3abcc4285bb8db513a1c1c7e7d16b21b8c2aa486.\r\n\r\n",
   "mandatory": false,
   "package_type": "installer",
   "components_asset": "components.json",
-  "delta_from": "0.30.153",
-  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.153.zip",
-  "delta_sha256": "a0f849d5f5a43a3290a45ec01c10b10ab43c4921546c9bd3763dd52feca9c3e6",
-  "delta_size": 7018961,
+  "delta_from": "0.30.155",
+  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.155.zip",
+  "delta_sha256": "15c14d2440817fa45bb96141ee2d08c1f851dc6cbb9c1747c56cb564914707fb",
+  "delta_size": 7031821,
   "channel": "beta",
-  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.155/XyetaBinder-Beta-Setup.exe",
-  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.155/XyetaBinder-Beta-Delta-from-0.30.153.zip"
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.159/XyetaBinder-Beta-Setup.exe",
+  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.159/XyetaBinder-Beta-Delta-from-0.30.155.zip"
 }
