@@ -153,7 +153,7 @@ def sync(channel, api):
     # the installation/restart outcome is confirmed on real user machines.
     # Prefer the already tested complete Setup for this one affected transition.
     # Preserve the release assets/hashes and do not change Stable or later Beta.
-    if channel == "beta" and str(manifest.get("version")) == "0.30.165":
+    if channel == "beta" and str(manifest.get("version")) in {"0.30.165", "0.30.166"}:
         for key in ("delta_from", "delta_asset", "delta_sha256",
                     "delta_size", "delta_download_url"):
             published.pop(key, None)
