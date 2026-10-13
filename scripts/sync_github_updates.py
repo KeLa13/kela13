@@ -145,6 +145,10 @@ def sync(channel, api):
     with urllib.request.urlopen(request, timeout=30) as response:
         manifest, rows = validate_export(read_json(response), channel)
     published = public_manifest(manifest)
+    # GitHub release asset remains immutable and matches the original
+    # signed/exported manifest. The mutable latest pointer can temporarily
+    # suppress a problematic delta without changing that release asset.
+    release_text = json.dumps(published, ensure_ascii=False, indent=2) + "\n"
     # Beta 0.30.165: native delta handoff can terminate the running app before
     # the installation/restart outcome is confirmed on real user machines.
     # Prefer the already tested complete Setup for this one affected transition.
@@ -165,8 +169,8 @@ def sync(channel, api):
                 and not manifest.get("rollback", False)):
             print(f"{channel}: keeping the newer published version")
             return
-    manifest_row = {"name": "update.json", "size": len(text.encode("utf-8")),
-                    "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()}
+    manifest_row = {"name": "update.json", "size": len(release_text.encode("utf-8")),
+                    "sha256": hashlib.sha256(release_text.encode("utf-8")).hexdigest()}
     expected = rows + [manifest_row]
     release = api.request("GET", f"releases/tags/{tag}", missing_ok=True)
     if release is None:
@@ -187,7 +191,7 @@ def sync(channel, api):
                     continue
                 if row["name"] == "update.json":
                     path = Path(directory) / "update.json"
-                    path.write_text(text, encoding="utf-8")
+                    path.write_text(release_text, encoding="utf-8")
                 else:
                     path = download_verified(row, directory)
                 api.request("POST", "", upload=(release["id"], path))
