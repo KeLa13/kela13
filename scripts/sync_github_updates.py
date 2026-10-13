@@ -145,6 +145,14 @@ def sync(channel, api):
     with urllib.request.urlopen(request, timeout=30) as response:
         manifest, rows = validate_export(read_json(response), channel)
     published = public_manifest(manifest)
+    # Beta 0.30.165: native delta handoff can terminate the running app before
+    # the installation/restart outcome is confirmed on real user machines.
+    # Prefer the already tested complete Setup for this one affected transition.
+    # Preserve the release assets/hashes and do not change Stable or later Beta.
+    if channel == "beta" and str(manifest.get("version")) == "0.30.165":
+        for key in ("delta_from", "delta_asset", "delta_sha256",
+                    "delta_size", "delta_download_url"):
+            published.pop(key, None)
     text = json.dumps(published, ensure_ascii=False, indent=2) + "\n"
     tag = ("beta-v" if channel == "beta" else "v") + manifest["version"]
     pointer_path = f"contents/{channel}/update.json"
