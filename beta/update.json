@@ -7,11 +7,6 @@
   "mandatory": false,
   "package_type": "installer",
   "components_asset": "components.json",
-  "delta_from": "0.30.170",
-  "delta_asset": "XyetaBinder-Beta-Delta-from-0.30.170.zip",
-  "delta_sha256": "e1a3c7cccdf13ef1af464905c96f3dbfe893a9c4f9eed2983fb62a105150d99f",
-  "delta_size": 7521595,
   "channel": "beta",
-  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.172/XyetaBinder-Beta-Setup.exe",
-  "delta_download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.172/XyetaBinder-Beta-Delta-from-0.30.170.zip"
+  "download_url": "https://github.com/KeLa13/kela13/releases/download/beta-v0.30.172/XyetaBinder-Beta-Setup.exe"
 }

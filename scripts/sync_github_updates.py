@@ -149,11 +149,11 @@ def sync(channel, api):
     # signed/exported manifest. The mutable latest pointer can temporarily
     # suppress a problematic delta without changing that release asset.
     release_text = json.dumps(published, ensure_ascii=False, indent=2) + "\n"
-    # Beta 0.30.165: native delta handoff can terminate the running app before
+    # Affected Beta updates: native delta handoff can terminate the running app before
     # the installation/restart outcome is confirmed on real user machines.
-    # Prefer the already tested complete Setup for this one affected transition.
+    # Prefer the tested complete Setup for these affected transitions.
     # Preserve the release assets/hashes and do not change Stable or later Beta.
-    if channel == "beta" and str(manifest.get("version")) in {"0.30.165", "0.30.166", "0.30.167", "0.30.168", "0.30.169"}:
+    if channel == "beta" and str(manifest.get("version")) in {"0.30.165", "0.30.166", "0.30.167", "0.30.168", "0.30.169", "0.30.172"}:
         for key in ("delta_from", "delta_asset", "delta_sha256",
                     "delta_size", "delta_download_url"):
             published.pop(key, None)
