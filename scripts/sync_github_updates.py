@@ -144,6 +144,44 @@ def sync(channel, api):
     request = urllib.request.Request(source, headers={"User-Agent": "Xyeta-Mirror-Sync"})
     with urllib.request.urlopen(request, timeout=30) as response:
         manifest, rows = validate_export(read_json(response), channel)
+    # Explicitly requested Beta rollback pins the PUBLIC update channel. This
+    # preserves an existing verified release without reuploading or altering it.
+    # Do not silently auto-promote newer private Betas during scheduled sync.
+    if channel == "beta":
+        request_file = Path(__file__).resolve().parents[1] / ".release-request.json"
+        requested = json.loads(request_file.read_text(encoding="utf-8"))
+        pinned = str(requested.get("beta", "")).strip()
+        if not VERSION_RE.fullmatch(pinned):
+            raise RuntimeError("Invalid Beta release request")
+        pinned_parts = tuple(int(v) for v in pinned.split("."))
+        source_parts = tuple(int(v) for v in manifest["version"].split("."))
+        if pinned_parts < source_parts:
+            existing = api.request("GET", "contents/beta/update.json", missing_ok=True)
+            if not existing:
+                raise RuntimeError("Pinned Beta rollback pointer is missing")
+            selected = json.loads(base64.b64decode(existing["content"]).decode("utf-8"))
+            release = api.request("GET", f"releases/tags/beta-v{pinned}", missing_ok=True)
+            if not release or release.get("draft") or not release.get("prerelease"):
+                raise RuntimeError("Pinned Beta rollback release is not public")
+            target_asset = next((row for row in release.get("assets", [])
+                                 if row.get("name") == "XyetaBinder-Beta-Setup.exe"), None)
+            expected_url = (f"https://github.com/{PUBLIC_REPOSITORY}/releases/download/"
+                            f"beta-v{pinned}/XyetaBinder-Beta-Setup.exe")
+            if (not target_asset or selected.get("version") != pinned
+                    or selected.get("channel") != "beta"
+                    or selected.get("asset") != "XyetaBinder-Beta-Setup.exe"
+                    or selected.get("package_type") != "installer"
+                    or selected.get("download_url") != expected_url
+                    or selected.get("rollback") is not True
+                    or selected.get("mandatory") is not True
+                    or selected.get("size") != target_asset.get("size")
+                    or selected.get("sha256") != str(target_asset.get("digest", "")).removeprefix("sha256:")):
+                raise RuntimeError("Pinned Beta rollback manifest does not match verified public release")
+            print(f"beta: keeping owner-pinned rollback {pinned}; source is {manifest['version']}")
+            return
+        if pinned_parts > source_parts:
+            raise RuntimeError("Requested Beta release is not yet published by the source")
+
     published = public_manifest(manifest)
     # GitHub release asset remains immutable and matches the original
     # signed/exported manifest. The mutable latest pointer can temporarily
