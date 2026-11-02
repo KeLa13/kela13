@@ -143,7 +143,11 @@ def sync(channel, api):
     source = f"{SOURCE_ORIGIN}/github-updates/{channel}"
     request = urllib.request.Request(source, headers={"User-Agent": "Xyeta-Mirror-Sync"})
     with urllib.request.urlopen(request, timeout=30) as response:
-        manifest, rows = validate_export(read_json(response), channel)
+        exported = read_json(response)
+        manifest, rows = validate_export(exported, channel)
+    policy = exported.get("policy", {})
+    if not isinstance(policy, dict) or type(policy.get("rollback", False)) is not bool:
+        raise ValueError("Invalid channel policy")
     # Explicitly requested Beta rollback pins the PUBLIC update channel. This
     # preserves an existing verified release without reuploading or altering it.
     # Do not silently auto-promote newer private Betas during scheduled sync.
@@ -187,6 +191,9 @@ def sync(channel, api):
     # signed/exported manifest. The mutable latest pointer can temporarily
     # suppress a problematic delta without changing that release asset.
     release_text = json.dumps(published, ensure_ascii=False, indent=2) + "\n"
+    if policy.get("rollback", False):
+        published["rollback"] = True
+        published["mandatory"] = True
     # Affected Beta updates: native delta handoff can terminate the running app before
     # the installation/restart outcome is confirmed on real user machines.
     # Prefer the tested complete Setup for these affected transitions.
@@ -204,7 +211,7 @@ def sync(channel, api):
         existing_version = json.loads(existing_text).get("version", "")
         if (VERSION_RE.fullmatch(existing_version)
                 and tuple(map(int, existing_version.split("."))) > tuple(map(int, manifest["version"].split(".")))
-                and not manifest.get("rollback", False)):
+                and not published.get("rollback", False)):
             print(f"{channel}: keeping the newer published version")
             return
     manifest_row = {"name": "update.json", "size": len(release_text.encode("utf-8")),
