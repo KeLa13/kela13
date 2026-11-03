@@ -245,7 +245,9 @@ def publish_verified_release(channel, manifest, rows, api, policy):
                     continue
                 if row["name"] == "update.json":
                     path = Path(directory) / "update.json"
-                    path.write_text(release_text, encoding="utf-8")
+                    # Hash and upload exactly the same bytes on every platform.
+                    # Text mode on Windows would silently replace LF with CRLF.
+                    path.write_bytes(release_text.encode("utf-8"))
                 else:
                     path = download_verified(row, directory)
                 api.request("POST", "", upload=(release["id"], path))
