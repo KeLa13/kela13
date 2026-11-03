@@ -19,6 +19,10 @@ PUBLIC_REPOSITORY = "KeLa13/kela13"
 SOURCE_ORIGIN = "https://xyeta-private-updater.20kella01.workers.dev"
 VERSION_RE = re.compile(r"\d+(?:\.\d+){1,7}")
 SHA_RE = re.compile(r"[0-9a-f]{64}")
+LEGACY_BASELINE = {
+    "version": "0.30.182", "size": 162463619,
+    "sha256": "e8b1b4ce026064c86c7a0f83cd116a0e69b0ee94dde83830bad39601919d577e",
+}
 
 
 def read_json(response):
@@ -186,6 +190,11 @@ def sync(channel, api):
         if pinned_parts > source_parts:
             raise RuntimeError("Requested Beta release is not yet published by the source")
 
+    publish_verified_release(channel, manifest, rows, api, policy)
+
+
+def publish_verified_release(channel, manifest, rows, api, policy):
+    """Publish only verified immutable assets, then move the mutable pointer."""
     published = public_manifest(manifest)
     # GitHub release asset remains immutable and matches the original
     # signed/exported manifest. The mutable latest pointer can temporarily
@@ -236,7 +245,9 @@ def sync(channel, api):
                     continue
                 if row["name"] == "update.json":
                     path = Path(directory) / "update.json"
-                    path.write_text(release_text, encoding="utf-8")
+                    # Hash and upload exactly the same bytes on every platform.
+                    # Text mode on Windows would silently replace LF with CRLF.
+                    path.write_bytes(release_text.encode("utf-8"))
                 else:
                     path = download_verified(row, directory)
                 api.request("POST", "", upload=(release["id"], path))
@@ -260,13 +271,96 @@ def sync(channel, api):
     print(f"{channel}: verified GitHub release {tag}")
 
 
+def published_release(api, channel, version):
+    """Read a release manifest by its verified GitHub asset, never a latest URL."""
+    if not VERSION_RE.fullmatch(version):
+        raise ValueError("Invalid published version")
+    tag = ("beta-v" if channel == "beta" else "v") + version
+    release = api.request("GET", f"releases/tags/{tag}", missing_ok=True)
+    if not release or release.get("draft") or bool(release.get("prerelease")) != (channel == "beta"):
+        raise RuntimeError("Selected public release is unavailable")
+    prefix = f"https://github.com/{PUBLIC_REPOSITORY}/releases/download/{tag}/"
+    assets = {item["name"]: item for item in release.get("assets", [])}
+
+    def row(name, limit=MAX_BYTES):
+        asset = assets.get(name, {})
+        size = asset.get("size")
+        digest = str(asset.get("digest", "")).removeprefix("sha256:")
+        if type(size) is not int or not 0 < size <= limit or not SHA_RE.fullmatch(digest):
+            raise RuntimeError("Published release asset is missing or unverified")
+        return {"name": name, "size": size, "sha256": digest, "url": prefix + name}
+
+    with tempfile.TemporaryDirectory(prefix="xyeta-release-manifest-") as directory:
+        path = download_verified(row("update.json", MAX_JSON), directory)
+        manifest = json.loads(path.read_text(encoding="utf-8-sig"))
+    installer = "XyetaBinder-Beta-Setup.exe" if channel == "beta" else "XyetaBinder.exe"
+    if (not isinstance(manifest, dict) or manifest.get("version") != version
+            or manifest.get("channel") != channel or manifest.get("asset") != installer
+            or manifest.get("package_type") != "installer"
+            or manifest.get("download_url") != prefix + installer
+            or manifest.get("delta_asset")):
+        raise RuntimeError("Published release manifest does not match the installer")
+    rows = [row(installer), row("components.json")]
+    if (manifest.get("size"), manifest.get("sha256")) != (rows[0]["size"], rows[0]["sha256"]):
+        raise RuntimeError("Published installer differs from its manifest")
+    return manifest, rows
+
+
+def sync_unified_beta(api):
+    """Compatibility delivery for old Beta clients; the installed app is Stable.
+
+    There is one installer build. Only its legacy tag/filename differs because
+    old clients strictly validate those names. No private Beta source is read.
+    """
+    pointer = api.request("GET", "contents/stable/update.json", missing_ok=True)
+    if not pointer:
+        raise RuntimeError("Ordinary update pointer must be published first")
+    selected = json.loads(base64.b64decode(pointer["content"]).decode("utf-8-sig"))
+    version = str(selected.get("version", ""))
+    manifest, rows = published_release(api, "stable", version)
+    for key in ("version", "channel", "asset", "package_type", "download_url", "size", "sha256"):
+        if selected.get(key) != manifest.get(key):
+            raise RuntimeError("Ordinary update pointer differs from the verified release")
+    if type(selected.get("rollback", False)) is not bool:
+        raise ValueError("Invalid ordinary rollback policy")
+    rollback = selected.get("rollback", False)
+    if tuple(map(int, version.split('.'))) < (0, 30, 185) and not rollback:
+        raise RuntimeError("Unified delivery requires the reviewed migration build (0.30.185 or later)")
+
+    if version == LEGACY_BASELINE["version"]:
+        # This exact owner-approved Beta predates channel migration. Its bytes
+        # differ from Stable 182, so preserve the original release for rollback.
+        manifest, rows = published_release(api, "beta", version)
+        if any(manifest.get(key) != value for key, value in LEGACY_BASELINE.items()):
+            raise RuntimeError("Legacy rollback baseline differs from approved 0.30.182")
+    else:
+        manifest = dict(manifest, channel="beta", asset="XyetaBinder-Beta-Setup.exe")
+        rows = [dict(item, name=manifest["asset"]) if item["name"] == "XyetaBinder.exe"
+                else dict(item) for item in rows]
+        # rows keep Stable URLs and verified hashes: the installer is copied,
+        # never rebuilt or modified, including when resuming a draft release.
+    publish_verified_release("beta", manifest, rows, api, {"rollback": rollback})
+
+
+def read_release_request():
+    path = Path(__file__).resolve().parents[1] / ".release-request.json"
+    requested = json.loads(path.read_text(encoding="utf-8"))
+    if type(requested.get("unified", False)) is not bool:
+        raise ValueError("Invalid unified delivery setting")
+    return requested
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--channel", choices=("stable", "beta"), required=True)
     args = parser.parse_args()
     if os.environ.get("GITHUB_REPOSITORY") != PUBLIC_REPOSITORY:
         raise SystemExit("This publisher must run inside the public distribution repository")
-    sync(args.channel, GitHubAPI(os.environ.get("GH_TOKEN", "")))
+    api = GitHubAPI(os.environ.get("GH_TOKEN", ""))
+    if args.channel == "beta" and read_release_request().get("unified", False):
+        sync_unified_beta(api)
+    else:
+        sync(args.channel, api)
 
 
 if __name__ == "__main__":
