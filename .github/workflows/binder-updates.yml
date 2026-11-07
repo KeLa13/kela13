@@ -62,9 +62,16 @@ jobs:
       - name: Verify anonymous downloads directly from GitHub
         run: |
           python - <<'PY'
-          import hashlib, json, urllib.request
+          import hashlib, json, re, subprocess, urllib.request
+          # The checkout predates publication, and raw /master may still be cached.
+          # Resolve master after both sync steps and read that immutable commit.
+          published_head = subprocess.check_output(
+              ['git', 'ls-remote', 'origin', 'refs/heads/master'], text=True
+          ).split()[0]
+          assert re.fullmatch(r'[0-9a-f]{40}', published_head)
+          print('Verifying published manifests at', published_head)
           for channel in ['stable', 'beta']:
-              raw = f'https://raw.githubusercontent.com/KeLa13/kela13/master/{channel}/update.json'
+              raw = f'https://raw.githubusercontent.com/KeLa13/kela13/{published_head}/{channel}/update.json'
               request = urllib.request.Request(raw, headers={'User-Agent': 'XyetaBinder-Updater', 'Cache-Control': 'no-cache'})
               with urllib.request.urlopen(request, timeout=30) as response:
                   manifest = json.load(response)
